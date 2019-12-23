@@ -17,3 +17,14 @@ function color_my_prompt {
     export PS1="$__cur_location$__colored_branch $__prompt_tail $__reset_color"
 }
 color_my_prompt
+
+__ltrim_colon_completions ()
+{
+    if [[ "$1" == *:* && "$COMP_WORDBREAKS" == *:* ]]; then
+        local colon_word=${1%"${1##*:}"};
+        local i=${#COMPREPLY[*]};
+        while [[ $((--i)) -ge 0 ]]; do
+            COMPREPLY[$i]=${COMPREPLY[$i]#"$colon_word"};
+        done;
+    fi
+}
