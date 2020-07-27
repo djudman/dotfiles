@@ -4,7 +4,7 @@ export LSCOLORS=ExgxcxcxCxegedabagacEc
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-export PATH="/usr/local/bin:$PATH"
+export PATH="~/bin:/usr/local/bin:$PATH"
 
 export GIT_PS1_SHOWDIRTYSTATE=1
 
@@ -28,3 +28,9 @@ __ltrim_colon_completions ()
         done;
     fi
 }
+
+if [ $VIRTUAL_ENV ]
+then
+    VIRTUALENV_NAME=$(basename $VIRTUAL_ENV)
+    export PS1="($VIRTUALENV_NAME) $PS1"
+fi
