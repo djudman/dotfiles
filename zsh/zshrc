@@ -107,3 +107,15 @@ export CLICOLOR=1
 export LSCOLORS=ExgxdxcxcxegedabageHeh
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+python_venv() {
+  MYVENV=./venv
+  # when you cd into a folder that contains $MYVENV
+  [[ -d $MYVENV ]] && source $MYVENV/bin/activate > /dev/null 2>&1
+  # when you cd into a folder that doesn't
+  [[ ! -d $MYVENV ]] && deactivate > /dev/null 2>&1
+}
+autoload -U add-zsh-hook
+add-zsh-hook chpwd python_venv
+
+python_venv
