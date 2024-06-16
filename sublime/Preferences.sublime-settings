@@ -1,0 +1,25 @@
+{
+	"theme": "auto",
+	"highlight_line": true,
+	"line_highlight_color": "#FFFBD9",
+	"highlight_modified_tabs": true,
+	"highlight_line": "#FF0000",
+	"caret_style": "blink",
+	"draw_white_space": "all",
+	"rulers": [79, 99],
+	"tab_size": 4,
+	"translate_tabs_to_spaces": true,
+	"trim_trailing_white_space_on_save": true,
+	"word_wrap": true,
+	"soda_classic_tabs": true,
+	"always_show_minimap_viewport": true,
+	"font_face": "JetBrains Mono",
+	"font_size": 12,
+	"caret_style": "sublimelinter.underline",
+	"color_scheme": "GitHub Light.sublime-color-scheme",
+	"ignored_packages":
+	[
+		"Vintage",
+	],
+	"index_files": true,
+}

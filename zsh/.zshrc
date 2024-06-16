@@ -16,6 +16,6 @@ export GIT_PS1_SHOWUNTRACKEDFILES=true
 export GIT_PS1_SHOWCOLORHINTS=true
 
 export PS1="%F{blue}%B%~%b%f\$(__git_ps1 \" (%s)\") %F{magenta}➤%f "
-export PATH=$PATH:/opt/homebrew/bin
+export PATH=/Library/Frameworks/Python.framework/Versions/Current/bin:$PATH:/opt/homebrew/bin
 
 alias ll='ls -la'
