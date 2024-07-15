@@ -1,0 +1,15 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"FileIcons",
+		"GitHub Theme",
+		"Package Control",
+		"SublimeLinter",
+		"SublimeLinter-contrib-ruff",
+		"SublimeLinter-mypy",
+	],
+}
