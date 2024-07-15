@@ -1,0 +1,17 @@
+// SublimeLinter Settings - User
+{
+    // "debug": true,
+    "show_panel_on_save": "view",
+    "linters": {
+        "ruff": {
+            "@disable": false,
+            "args": [],
+            "executable": "/Library/Frameworks/Python.framework/Versions/Current/bin/ruff"
+        },
+        "mypy": {
+            "@disable": false,
+            "args": [],
+            "executable": "/Library/Frameworks/Python.framework/Versions/Current/bin/mypy"
+        }
+    }
+}
