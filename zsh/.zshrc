@@ -9,7 +9,7 @@ export EDITOR=vim
 export LSCOLORS=ExfxCxDxCxCgedabagaced
 export CLICOLOR=1
 
-source ~/.config/dotfiles/zsh/.git-prompt.sh
+source ~/.config/zsh/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUNTRACKEDFILES=true
 #export GIT_PS1_SHOWUPSTREAM=true
