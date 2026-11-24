@@ -1,0 +1,215 @@
+" Конфиг, общий для vim и nvim: ~/.vimrc ссылается на этот файл, nvim находит его
+" в $XDG_CONFIG_HOME/nvim/init.vim (см. README).
+
+set nocompatible
+filetype off
+
+" Общий каталог с локальными файлами (~/.vim) — в runtimepath у обоих редакторов
+let &runtimepath = expand('~/.vim') . ',' . &runtimepath
+
+" Настройки плагинов — до загрузки плагинов, читающих их при старте
+let mapleader = ' '
+let python_highlight_all = 0
+let python_highlight_comment = 0
+let python_highlight_builtin_objs = 0
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+if isdirectory(expand('~/.vim/bundle/Vundle.vim'))
+  call vundle#begin()
+  " alternatively, pass a path where Vundle should install plugins
+  "call vundle#begin('~/some/path/here')
+
+  " let Vundle manage Vundle, required
+  Plugin 'VundleVim/Vundle.vim'
+  Plugin 'tpope/vim-surround'
+  " All of your Plugins must be added before the following line
+  call vundle#end()            " required
+endif
+
+filetype plugin indent on    " required
+
+" Кодировка UTF-8
+set encoding=utf8
+set fileencodings=utf8,cp1251
+
+" Игнорировать регистр при поиске
+set ignorecase
+
+" Не игнорировать регистр, если в паттерне есть большие буквы
+set smartcase
+
+" Подсвечивать найденный паттерн
+set hlsearch
+
+" Интерактивный поиск
+set incsearch
+
+" Размер табов - 4
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+" Превратить табы в пробелы
+set expandtab
+
+" Таб перед строкой будет вставлять количество пробелов определённое в shiftwidth
+set smarttab
+
+" Копировать отступ на новой строке
+set autoindent
+set smartindent
+
+" Показывать номера строк
+set number
+
+" Автокомплиты в командной строке
+set wildmode=longest,list
+
+" Подсветка синтаксиса
+syntax on
+
+" Прокрутка окна, пока тянем выделение мышью за пределы экрана
+set mouse=a
+autocmd VimEnter * if !has('nvim') | silent! set ttymouse=sgr | endif
+
+set mousehide "Спрятать курсор мыши когда набираем текст
+
+" Системный буфер обмена. В nvim опция работает в обе стороны. В Apple-сборке
+" /usr/bin/vim запись в буфер не работает вовсе (чтение — работает), а с этой
+" опцией весь yank уходит в "+ и теряется: yy ничего не копирует, а p вставляет
+" то, что скопировано извне. Поэтому там опция выключена, наружу янк выгружается
+" сам через pbcopy, а из буфера берётся явно — «"+p».
+if has('nvim')
+  set clipboard=unnamedplus
+elseif executable('pbcopy')
+  function! s:YankToPasteboard() abort
+    if v:event.operator ==# 'y'
+      call system('pbcopy', join(v:event.regcontents, "\n") . "\n")
+    endif
+  endfunction
+  augroup yank_to_pasteboard
+    autocmd!
+    autocmd TextYankPost * call s:YankToPasteboard()
+  augroup END
+endif
+
+" Быстрый скроллинг
+set ttyfast
+
+" Курсор может стоять на первой/последней строке окна: окно не прокручивается
+" при выделении и переходах к краям файла
+set scrolloff=0
+
+" Встроенный плагин для распознавания отступов
+filetype plugin indent on
+
+set novisualbell "Не мигать
+set t_vb= "Не пищать
+
+" Удобное поведение backspace
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+
+" Вырубаем черточки на табах
+set showtabline=1
+
+" Цвета: 24-битные, если терминал их умеет, иначе палитра xterm256
+if has('termguicolors') && (empty($COLORTERM) || $COLORTERM =~# 'truecolor\|24bit')
+  set termguicolors
+else
+  set t_Co=256
+endif
+
+set ruler
+
+set guifont="JetBrains Mono":h17
+
+" Своя схема лежит в colors рядом с этим конфигом. Путь берём из самого файла:
+" resolve разворачивает симлинк, через который конфиг был прочитан
+let s:colors = fnamemodify(resolve(expand('<sfile>:p')), ':h') . '/colors'
+if isdirectory(s:colors)
+  let &runtimepath = fnamemodify(s:colors, ':h') . ',' . &runtimepath
+endif
+
+" Схема ставится и при старте, и после переключения синтаксиса:
+" syntax reset после FileType/Syntax обнуляет цвета
+autocmd BufReadPost,Syntax,FileType * colorscheme minimal
+doautocmd <nomodeline> Syntax
+doautocmd <nomodeline> BufReadPost
+
+" Перед сохранением вырезаем пробелы на концах (только в .py файлах)
+autocmd BufWritePre *.py normal m`:%s/\s\+$//e ``
+
+" В .py файлах включаем умные отступы после ключевых слов
+autocmd BufRead *.py set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
+
+" TODO:/FIXME: в комментариях подсвечиваются (жирным — см. схему minimal);
+" в питоне комментарий один и тот же, так что хватает набора из '#' и начала строки
+autocmd FileType python setlocal comments=fb:-,fb:#,s1:#
+
+" Только для vim (в nvim это не поддерживается)
+if !has('nvim')
+  set termencoding=utf-8 "Кодировка терминала
+endif
+
+" Вырубаем .swp и ~ (резервные) файлы
+set nobackup
+set noswapfile
+
+" Переносим на другую строчку, разрываем строки
+set wrap
+set linebreak
+
+" Вертикальная линия-ограничитель на 80 символах (настраивается в схеме minimal)
+set colorcolumn=80
+
+" Курсор: линия во вставке, блок в остальных режимах. nvim и vim с +tui_options
+" читают форму из guicursor, остальным нужен DECSCUSR ниже
+set guicursor=n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20
+
+" В терминальном vim без +tui_options guicursor не применяется, форму задаёт сам
+" vim через DECSCUSR: 6 q — неморгающая линия, 2 q — неморгающий блок. Строки
+" термкапа дописываем (.=), а не затираем. t_ti обязателен: при входе в vim t_EI
+" не отправляется, без него форма проставилась бы только после первой i.
+if !has('gui_running') && &term =~# 'ghostty\|xterm\|kitty\|alacritty\|screen\|tmux'
+  let &t_ti .= "\e[2 q"
+  let &t_SI .= "\e[6 q"
+  let &t_EI .= "\e[2 q"
+  let &t_te .= "\e[2 q"
+endif
+
+" Подсветка текущей строки (светло-голубая — см. схему), только в активном окне,
+" чтобы при сплитах не подсвечивались строки во всех окнах
+augroup cursorline_window
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup END
+
+set hidden
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>
+
+" Esc снимает подсветку поиска, второй Esc возвращает обычное поведение
+nnoremap <silent> <Esc> :<C-U>nohlsearch<CR><Esc>
+
+" Ветка git для строки состояния; имя кешируется по каталогу файла
+function! GitBranch() abort
+  let l:dir = expand('%:p:h')
+  if l:dir ==# '' || !isdirectory(l:dir)
+    return ''
+  endif
+  if !exists('b:git_branch') || get(b:, 'git_branch_dir', '') !=# l:dir
+    let b:git_branch_dir = l:dir
+    let b:git_branch = trim(system('git -C ' . shellescape(l:dir) . ' rev-parse --abbrev-ref HEAD 2>/dev/null'))
+  endif
+  return b:git_branch
+endfunction
+
+" Строка состояния: имя файла, ветка git, позиция в файле
+set laststatus=2
+set statusline=%<%t\ %m%r%h%w
+set statusline+=\ %{GitBranch()}
+set statusline+=%=
+set statusline+=\ %y\ %{&fileencoding?&fileencoding:'utf8'}
+set statusline+=\ [%l:%c/%L]\ %P
